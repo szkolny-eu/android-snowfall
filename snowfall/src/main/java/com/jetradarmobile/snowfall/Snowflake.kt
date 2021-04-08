@@ -25,7 +25,8 @@ import java.lang.Math.toRadians
 
 internal class Snowflake(
     private val randomizer: Randomizer,
-    private val params: Params
+    private val params: Params,
+    private val image: Bitmap? = params.image
 ) {
     private var size: Int = 0
     private var alpha: Int = 255
@@ -58,8 +59,8 @@ internal class Snowflake(
     internal fun reset(positionY: Double? = null) {
         shouldRecycleFalling = true
         size = randomizer.randomInt(params.sizeMinInPx, params.sizeMaxInPx, gaussian = true)
-        if (params.image != null) {
-            bitmap = Bitmap.createScaledBitmap(params.image, size, size, false)
+        if (image != null) {
+            bitmap = Bitmap.createScaledBitmap(image, size, size, false)
         }
 
         val speed = ((size - params.sizeMinInPx).toFloat() / (params.sizeMaxInPx - params.sizeMinInPx) *

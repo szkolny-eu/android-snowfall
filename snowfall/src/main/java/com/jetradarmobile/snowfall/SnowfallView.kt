@@ -40,6 +40,7 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
   private val snowflakesAlreadyFalling: Boolean
 
   private lateinit var updateSnowflakesThread: UpdateSnowflakesThread
+  private var snowflakeBitmaps: List<Bitmap>? = null
   private var snowflakes: Array<Snowflake>? = null
 
   init {
@@ -133,6 +134,12 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
     snowflakes?.forEach { it.shouldRecycleFalling = true }
   }
 
+  fun setSnowflakeBitmaps(bitmaps: List<Bitmap>?) {
+    snowflakeBitmaps = bitmaps
+    snowflakes = createSnowflakes()
+    restartFalling()
+  }
+
   private fun createSnowflakes(): Array<Snowflake> {
     val randomizer = Randomizer()
 
@@ -150,7 +157,13 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
         fadingEnabled = snowflakesFadingEnabled,
         alreadyFalling = snowflakesAlreadyFalling)
 
-    return Array(snowflakesNum) { Snowflake(randomizer, snowflakeParams) }
+    return Array(snowflakesNum) {
+      val image = randomizer
+        .randomItem(snowflakeBitmaps)
+        ?: snowflakeImage
+
+      Snowflake(randomizer, snowflakeParams, image)
+    }
   }
 
   private fun updateSnowflakes() {

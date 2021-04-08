@@ -18,11 +18,13 @@ package com.jetradarmobile.snowfall
 
 import java.util.Random
 import kotlin.math.abs
+import kotlin.random.asKotlinRandom
 
 internal class Randomizer {
 
   // No need in random instance to be lazy
   private val random = Random(System.currentTimeMillis())
+  private val randomKt = random.asKotlinRandom()
 
   fun randomDouble(max: Int): Double {
     return random.nextDouble() * (max + 1)
@@ -47,5 +49,9 @@ internal class Randomizer {
 
   fun randomSignum(): Int {
     return if (random.nextBoolean()) 1 else -1
+  }
+
+  fun <E> randomItem(list: Collection<E>?): E? {
+    return list?.randomOrNull(randomKt)
   }
 }
